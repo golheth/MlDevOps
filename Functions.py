@@ -5,74 +5,11 @@ import os
 
 
 
-df_games_items2 = pd.read_parquet('df_games_items2.parquet')
-df_games_reviews2 = pd.read_parquet('df_games_reviews2.parquet')
+
 df_combined = pd.read_parquet('df_combined.parquet')
 
 df_combined = df_combined.reset_index(drop=True)
 
-
-def userdata(User_id, df_games_reviews2, df_games_items2, df_combined):
-    # Filtrar las revisiones del usuario específico en df_games_reviews2
-    user_reviews = df_games_reviews2[df_games_reviews2['user_id'] == User_id]
-    
-    # Vincular las revisiones del usuario con los juegos en df_games_items2 usando user_id
-    user_game_names = user_reviews.merge(df_games_items2, on='user_id', how='inner')['item_name']
-    
-    # Utilizar item_name para relacionar los juegos con los precios en df_games
-    user_games_prices = df_combined[df_combined['game'].isin(user_game_names)]
-    
-    # Calcular la cantidad de dinero gastado por el usuario
-    money_spent = user_games_prices['price'].sum()
-    
-    # Calcular el porcentaje de recomendación basado en las reviews
-    recommend_percentage = (user_reviews['recommend'].sum() / user_reviews.shape[0]) * 100
-    
-    # Calcular la cantidad de items revisados
-    num_items = len(user_reviews)
-    
-    return money_spent, recommend_percentage, num_items
-
-# Consulta la información para el usuario con el ID deseado
-User_id = 'wayfeng'  # Reemplaza 'tu_id_aqui' con el ID que desees consultar
-money_spent, recommend_percentage, num_items = userdata(User_id, df_games_reviews2, df_games_items2, df_combined)
-
-# Imprime o utiliza los resultados según sea necesario
-print(f'Cantidad de dinero gastado por el usuario: ${money_spent:.2f}')
-print(f'Porcentaje de recomendación: {recommend_percentage:.2f}%')
-print(f'Cantidad de items revisados: {num_items}')
-
-
-
-
-def countreviews(date1, df_games_reviews2, date2):
-    # Convert the date strings to datetime objects
-    date1 = pd.to_datetime(date1)
-    date2 = pd.to_datetime(date2)
-
-    # Filter the DataFrame for reviews posted between date1 and date2
-    filtered_reviews = df_games_reviews2[(df_games_reviews2['posted'] >= date1) & (df_games_reviews2['posted'] <= date2)]
-
-    # Count the number of users who posted reviews in the filtered DataFrame
-    num_users = len(filtered_reviews['user_id'].unique())
-
-    # Calculate the percentage of recommendations
-    total_reviews = len(filtered_reviews)
-    if total_reviews > 0:
-        percentage_recommendations = (filtered_reviews['recommend'].sum() / total_reviews) * 100
-    else:
-        percentage_recommendations = 0
-
-    return num_users, percentage_recommendations
-# Example usage:
-date1 = '2015-12-01'  # Replace with your desired start date
-date2 = '2017-12-02'  # Replace with your desired end date
-
-# Call the function with your DataFrame and date range
-num_users, percentage_recommendations = countreviews(date1, df_games_reviews2, date2)
-
-print(f"Number of users who posted reviews between {date1} and {date2}: {num_users}")
-print(f"Percentage of recommendations in the reviews: {percentage_recommendations:.2f}%")
 
 
 
