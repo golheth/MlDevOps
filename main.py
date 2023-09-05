@@ -3,12 +3,13 @@ from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
 from pydantic import BaseModel
 from fastapi import FastAPI
+import uvicorn
 
 # Importa tus funciones y DataFrames
 from Functions import userdata, countreviews, genre_rank
 
 app = FastAPI()
-
+uvicorn main:app --host 0.0.0.0 --port 10000
 # Define modelos Pydantic para las solicitudes y respuestas
 class GameRequest(BaseModel):
     game_name: str
@@ -57,7 +58,5 @@ def get_game_recommendations(game_request: GameRequest):
     recommendations = get_recommendations(game_request.game_name, similarity_matrix, num_recommendations)
     return {"recommendations": recommendations}
 
-if __name__ == "__main__":
-    import uvicorn
-uvicorn main:app --host 0.0.0.0 --port 10000
+
 
