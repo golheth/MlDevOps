@@ -1,28 +1,18 @@
 import pandas as pd
-
-
 from sklearn.metrics.pairwise import cosine_similarity
-
 from typing import List
-
 from pydantic import BaseModel
+from fastapi import FastAPI
 
-class GameRequest(BaseModel):
-    game_name: str
-
-df_games_items2 = pd.read_parquet('df_games_items2.parquet')
-df_games_reviews2 = pd.read_parquet('df_games_reviews2.parquet')
-df_combined = pd.read_parquet('df_combined.parquet')
-category_playtime = pd.read_parquet('category_playtime.parquet')
-
-df_combined = df_combined.reset_index(drop=True)
 # Importa tus funciones y DataFrames
 from Functions import userdata, countreviews, genre_rank
 
-from fastapi import FastAPI
 app = FastAPI()
 
 # Define modelos Pydantic para las solicitudes y respuestas
+class GameRequest(BaseModel):
+    game_name: str
+
 class UserRequest(BaseModel):
     user_id: str
 
@@ -32,6 +22,14 @@ class DateRangeRequest(BaseModel):
 
 class GenreRankRequest(BaseModel):
     category_name: str
+
+# Carga tus DataFrames
+df_games_items2 = pd.read_parquet('df_games_items2.parquet')
+df_games_reviews2 = pd.read_parquet('df_games_reviews2.parquet')
+df_combined = pd.read_parquet('df_combined.parquet')
+category_playtime = pd.read_parquet('category_playtime.parquet')
+
+df_combined = df_combined.reset_index(drop=True)
 
 @app.get("/")
 def read_root():
@@ -54,11 +52,6 @@ def get_genre_rank(genre_rank_request: GenreRankRequest):
     position = genre_rank(genre_rank_request.category_name)
     return {"position": position}
 
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-    
 @app.post("/recommendations/")
 def get_game_recommendations(game_request: GameRequest):
     recommendations = get_recommendations(game_request.game_name, similarity_matrix, num_recommendations)
