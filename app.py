@@ -3,8 +3,9 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
 from pydantic import BaseModel
+
 from fastapi import FastAPI
-app = FastAPI()
+    app = FastAPI()
 
 
 
