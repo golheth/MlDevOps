@@ -25,14 +25,13 @@ class DateRangeRequest(BaseModel):
     date1: str
     date2: str
 
-class GenreRankRequest(BaseModel):
-    category_name: str
+
 
 # Carga tus DataFrames
 df_games_items2 = pd.read_parquet('df_games_items2.parquet')
 df_games_reviews2 = pd.read_parquet('df_games_reviews2.parquet')
 df_combined = pd.read_parquet('df_combined.parquet')
-category_playtime = pd.read_parquet('category_playtime.parquet')
+
 
 df_combined = df_combined.reset_index(drop=True)
 
@@ -52,10 +51,6 @@ def count_reviews(date_range_request: DateRangeRequest):
         date_range_request.date1, df_games_reviews2, date_range_request.date2)
     return {"num_users": num_users, "percentage_recommendations": percentage_recommendations}
 
-@app.post("/genrerank/")
-def get_genre_rank(genre_rank_request: GenreRankRequest):
-    position = genre_rank(genre_rank_request.category_name)
-    return {"position": position}
 
 @app.post("/recommendations/")
 def get_game_recommendations(game_request: GameRequest):
