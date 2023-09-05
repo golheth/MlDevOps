@@ -8,7 +8,7 @@ import os
 df_games_items2 = pd.read_parquet('df_games_items2.parquet')
 df_games_reviews2 = pd.read_parquet('df_games_reviews2.parquet')
 df_combined = pd.read_parquet('df_combined.parquet')
-category_playtime = pd.read_parquet('category_playtime.parquet')
+
 df_combined = df_combined.reset_index(drop=True)
 
 
@@ -74,30 +74,7 @@ num_users, percentage_recommendations = countreviews(date1, df_games_reviews2, d
 print(f"Number of users who posted reviews between {date1} and {date2}: {num_users}")
 print(f"Percentage of recommendations in the reviews: {percentage_recommendations:.2f}%")
 
-# 3. Crea la función genre_rank
-def genre_rank(category_name):
-    # Convierte el nombre de la categoría a minúsculas
-    category_name = category_name.lower()
-    
-    # Encuentra la posición de la categoría en el DataFrame ordenado
-    position = category_playtime.columns.get_loc(category_name)
-    
-    # Devuelve la posición (1-indexed) de la categoría
-    return position + 1
 
-# Ejemplo de uso
-categoria_buscada = 'action'  # Puedes cambiar esto a cualquier categoría
-posicion = genre_rank(categoria_buscada)
-print(f'La categoría "{categoria_buscada}" está en la posición #{posicion}')
-
-# Llamada de ejemplo a la función genre_rank
-categoria_buscada = 'action'  # Cambia esto a la categoría que desees buscar
-
-# Llama a la función genre_rank con la categoría deseada
-posicion = genre_rank(categoria_buscada)
-
-# Imprime el resultado o devuélvelo como respuesta en tu API
-print(f'La categoría "{categoria_buscada}" está en la posición #{posicion}')
 
 
 
