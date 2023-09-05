@@ -1,14 +1,17 @@
+import uvicorn
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
 from pydantic import BaseModel
 from fastapi import FastAPI
-import uvicorn
+app = FastAPI()
+
+
 
 # Importa tus funciones y DataFrames
 from Functions import userdata, countreviews, genre_rank
 
-app = FastAPI()
+
 
 # Define modelos Pydantic para las solicitudes y respuestas
 class GameRequest(BaseModel):
