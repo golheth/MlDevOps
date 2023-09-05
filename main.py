@@ -9,7 +9,7 @@ import uvicorn
 from Functions import userdata, countreviews, genre_rank
 
 app = FastAPI()
-uvicorn main:app --host 0.0.0.0 --port 10000
+
 # Define modelos Pydantic para las solicitudes y respuestas
 class GameRequest(BaseModel):
     game_name: str
